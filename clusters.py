@@ -23,17 +23,14 @@ def K(data):
 
 
 # Create function that plots kmeans data based on the data and elbow method
-def plotKMeans(data): 
+def plotKMeans(data, klabels): 
     """"
     input data,
     returns plot of data with kmeans applied to it, differnt colors represent different labels
     
     """
-    kmeans = KMeans(n_clusters=K(data))
-    kmeans.fit(data)
-
     get_ipython().run_line_magic('matplotlib', 'inline')
-    plt.scatter(x, y, c=kmeans.labels_)
+    plt.scatter(data, c=klabels)
     plt.show()
     
     print(kmeans.labels_)
@@ -63,7 +60,7 @@ returns: sDict gets returned.
    
     print(klabels)
     print(labels)
-    
+   
     tDict = {}
     sDict = {}
     gSList = set(labels)
@@ -76,14 +73,16 @@ returns: sDict gets returned.
     for x in gSList:
         glist.append(x)
         for l in range(len(gSList)):
-            tDict[x + str(l)] = 0 #initialize total dictionary
+            tDict[str(x) + str(l)] = 0 #initialize total dictionary
             sDict[x] = 0
             
 #put the actual values into dictionary that counts the number of cluster instances for each    
     
     for b in range(len(labels)): 
         for t in tDict:
-            if t[:len(t)-1] == labels[b] and t[len(t)-1:] == str(klabels[b]):
+            print(t[:len(t)-1])
+            print(t[len(t)-1:])
+            if t[:len(t)-1] == str(labels[b]) and t[len(t)-1:] == str(klabels[b]):
                 tDict[t] = tDict.get(t) + 1
     print(tDict)
 
@@ -91,7 +90,7 @@ returns: sDict gets returned.
         for x in range(len(gSList)-1):
             a = glist[0]
             for y in range(1, len(glist)):
-                if tDict[a + str(x)] < tDict[glist[y] + str(x)]:
+                if tDict[str(a) + str(x)] < tDict[str(glist[y]) + str(x)]:
                     a = glist[y]
                 sDict[a] = x
             glist.remove(a)
