@@ -1,5 +1,6 @@
 import kneed
 import sklearn
+import numpy as np
 from kneed import KneeLocator
 from sklearn.cluster import KMeans
 from collections import Counter
@@ -29,11 +30,11 @@ def plotKMeans(data, klabels):
     returns plot of data with kmeans applied to it, differnt colors represent different labels
     
     """
+    date = np.array(data)
+    x, y = date.T
     get_ipython().run_line_magic('matplotlib', 'inline')
-    plt.scatter(data, c=klabels)
+    plt.scatter(x, y, c=klabels)
     plt.show()
-    
-    print(kmeans.labels_)
 
 
 
@@ -58,8 +59,8 @@ returns: sDict gets returned.
 
     """
    
-    print(klabels)
-    print(labels)
+    #print(klabels)
+    #print(labels)
    
     tDict = {}
     sDict = {}
