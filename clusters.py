@@ -57,10 +57,10 @@ to find which label is most associated with which random value.
 returns: sDict gets returned.
 
     """
-   
-    print(klabels)
-    print(labels)
-   
+	
+    df = pandas.DataFrame({'klabels':klabels, 'labels':labels})
+    print(df)  
+ 
     tDict = {}
     sDict = {}
     gSList = set(labels)
@@ -80,11 +80,8 @@ returns: sDict gets returned.
     
     for b in range(len(labels)): 
         for t in tDict:
-            print(t[:len(t)-1])
-            print(t[len(t)-1:])
             if t[:len(t)-1] == str(labels[b]) and t[len(t)-1:] == str(klabels[b]):
                 tDict[t] = tDict.get(t) + 1
-    print(tDict)
 
     while len(glist) > 1:
         for x in range(len(gSList)-1):
