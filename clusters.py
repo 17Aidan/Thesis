@@ -80,8 +80,6 @@ returns: sDict gets returned.
     
     for b in range(len(labels)): 
         for t in tDict:
-            print(t[:len(t)-1])
-            print(t[len(t)-1:])
             if t[:len(t)-1] == str(labels[b]) and t[len(t)-1:] == str(klabels[b]):
                 tDict[t] = tDict.get(t) + 1
     print(tDict)
