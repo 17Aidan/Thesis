@@ -46,7 +46,7 @@ def plotKMeans(data, klabels):
 # 
 # returns: sDict gets returned.
 
-def labelClusters(klabels, labels):
+def labelClusters(klabels, labels, print_df = False):
     """"
     labelClusters Input: data, and labels associated with data
 
@@ -66,6 +66,10 @@ returns: sDict gets returned.
     sDict = {}
     gSList = set(labels)
     glist = []
+   
+    if print_df : 
+    	df = pandas.DataFrame({'klabel':klabels, 'label':labels})
+    	print(df)
     
     if len(set(klabels)) != len(gSList):
         return "ERROR: number of clusters does not match with number of labels!"
