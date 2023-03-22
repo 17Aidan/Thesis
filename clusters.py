@@ -39,6 +39,7 @@ def plotKMeans(data, klabels):
     plt.show()
 
 def labelClusters(klabels, labels, print_df = False):
+    """
     # create default dictionary with default an empty list
     # the key is the klabel and the value is the list of values for that label
     counters = defaultdict(list)
@@ -55,7 +56,31 @@ def labelClusters(klabels, labels, print_df = False):
     for k in counters:
         c = counters[k]
         clusterLabels[k] = c.most_common(1)[0][0]
+    print(clusterLabels)
     return clusterLabels
+    """
+     # create a dictionary of counters, one for each klabel
+    counters = {k: [] for k in set(klabels)}
+
+    # loop through each label and add it to the corresponding counter
+    for k, label in zip(klabels, labels):
+        counters[k].append(label)
+
+    # count the number of values for each klabel
+    for k in counters:
+        counters[k] = Counter(map(tuple, counters[k]))
+
+    # create a dictionary of clusterLabels based on the most common value for each klabel
+    clusterLabels = {}
+    for k in counters:
+        clusterLabels[k] = counters[k].most_common(1)[0][0]
+
+    if print_df:
+        df = pd.DataFrame({'label': labels, 'cluster': klabels})
+        print(df)
+
+    return clusterLabels
+
 
 def getClusters(data, labels):
     """"
@@ -86,6 +111,8 @@ def assignClusters(klabels, labels):
     
     tlist = []
     dictt = labelClusters(klabels, labels)
+    
+    
     for y in range(len(klabels)):
         for x in dictt:
             if dictt[x] == klabels[y]:
@@ -103,8 +130,12 @@ def randIndex(klabels, labels):
     
     return rand index
     """
+    listl = assignClusters(klabels, labels)
+    print(labels)
+    print(listl)
+    print(klabels)
     
-    score = sklearn.metrics.rand_score(klabels, labels)
+    score = sklearn.metrics.rand_score(klabels, listl)
     
     return score 
 
