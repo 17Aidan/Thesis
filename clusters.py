@@ -39,7 +39,7 @@ def plotKMeans(data, klabels):
     plt.show()
 
 def labelClusters(klabels, labels, print_df = False):
-    """
+    
     # create default dictionary with default an empty list
     # the key is the klabel and the value is the list of values for that label
     counters = defaultdict(list)
@@ -80,6 +80,7 @@ def labelClusters(klabels, labels, print_df = False):
         print(df)
 
     return clusterLabels
+    """
 
 
 def getClusters(data, labels):
@@ -130,12 +131,12 @@ def randIndex(klabels, labels):
     
     return rand index
     """
-    listl = assignClusters(klabels, labels)
+    #listl = assignClusters(klabels, labels)
     print(labels)
-    print(listl)
+    #print(listl)
     print(klabels)
     
-    score = sklearn.metrics.rand_score(klabels, listl)
+    score = sklearn.metrics.rand_score(klabels, labels)
     
     return score 
 
