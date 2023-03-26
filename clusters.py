@@ -13,30 +13,62 @@ from collections import defaultdict
 
 # Create function that runs kmeans with a range of clusters with the data, test the accuracy (inertia) of different cluster numbers representing the raw data using the elbow method, return the optimal number of clusters
 
-def K(data):
+def K(data, max_k = 11, plot = False):
 
     inertias = []
-    for i in range(1,11):
+    for i in range(1,max_k):
         kmeans = KMeans(n_clusters=i)
         kmeans.fit(data)
         inertias.append(kmeans.inertia_)
 
-    kl = KneeLocator(range(1, 11), inertias, curve="convex", direction="decreasing")
+    kl = KneeLocator(range(1, max_k), inertias, curve="convex", direction="decreasing")
+    if plot :
+        kl.plot_knee()
     return kl.elbow
 
 
+# normalize data
+def normalize(data) :
+	'''Normalize data so each column has a mean of 0 and a standard deviation of 1'''
+	return (data - np.mean(data, axis=0)) / np.std(data, axis=0)
+
 # Create function that plots kmeans data based on the data and elbow method
-def plotKMeans(data, klabels): 
+def plotKMeans(data, labels1, labels2 = None): 
     """"
     input data,
-    returns plot of data with kmeans applied to it, differnt colors represent different labels
+    returns plot of data color-coded by labels1; If labels2 is specified, we use 'x' to indicate a difference between label values (e.g., incorrect classification)
     
     """
+
     date = np.array(data)
     x, y = date.T
-    get_ipython().run_line_magic('matplotlib', 'inline')
-    plt.scatter(x, y, c=klabels)
+
+    if np.any(labels2 == None):
+       plt.scatter(x,y,c = labels1)
+       return None
+
+    assignedDict = labelClusters(labels1, labels2)
+    assigned = [assignedDict[l] for l in labels1]
+    correct = np.array(assigned) == np.array(labels2)
+    wrong = np.logical_not(correct)
+
+    fig, ax = plt.subplots()
+    colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+    i = 0
+    for s in set(labels1) :
+        index = np.logical_and(correct, labels1 == s)
+        ax.scatter(x[index], y[index], c=colors[i], label = assignedDict[s])
+    
+        index = np.logical_and(wrong, labels1 == s)
+        ax.scatter(x[index], y[index], c=colors[i], label = '_no_legend_', marker = 'x')
+    
+        i+= 1
+    
+    handles, labels = plt.gca().get_legend_handles_labels()
+    order = np.argsort(labels)
+    ax.legend([handles[idx] for idx in order],[labels[idx] for idx in order]) 
     plt.show()
+
 
 def labelClusters(klabels, labels, print_df = False):
     
