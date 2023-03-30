@@ -80,39 +80,19 @@ def labelClusters(klabels, labels, print_df = False):
     for k, l in zip(klabels, labels) :    
         # add the label to the dictionary
         counters[k] += [l]
+        
     # count the number of values for each klabel
     for k in counters :
         counters[k] = Counter(counters[k])
+    counters
+    
     # create a dictionary of clusterLabels based on the most common value for each klabel
     clusterLabels = {}
     for k in counters:
         c = counters[k]
         clusterLabels[k] = c.most_common(1)[0][0]
-    print(clusterLabels)
+        
     return clusterLabels
-    """
-     # create a dictionary of counters, one for each klabel
-    counters = {k: [] for k in set(klabels)}
-
-    # loop through each label and add it to the corresponding counter
-    for k, label in zip(klabels, labels):
-        counters[k].append(label)
-
-    # count the number of values for each klabel
-    for k in counters:
-        counters[k] = Counter(map(tuple, counters[k]))
-
-    # create a dictionary of clusterLabels based on the most common value for each klabel
-    clusterLabels = {}
-    for k in counters:
-        clusterLabels[k] = counters[k].most_common(1)[0][0]
-
-    if print_df:
-        df = pd.DataFrame({'label': labels, 'cluster': klabels})
-        print(df)
-
-    return clusterLabels
-    """
 
 
 def getClusters(data, labels):
@@ -150,7 +130,9 @@ def assignClusters(klabels, labels):
         for x in dictt:
             if dictt[x] == klabels[y]:
                 tlist.append(x)
-    return tlist
+    print(tlist)
+    p = np.array(tlist)
+    return p
 
 
 def randIndex(klabels, labels):
@@ -163,12 +145,21 @@ def randIndex(klabels, labels):
     
     return rand index
     """
-    #listl = assignClusters(klabels, labels)
+    listl = assignClusters(klabels, labels)
     print(labels)
-    #print(listl)
+    print(listl)
     print(klabels)
     
     score = sklearn.metrics.rand_score(klabels, labels)
     
     return score 
 
+def use_kmeans(data, labels):
+    k = cl.K(data)
+    kmeans = KMeans(n_clusters=k)
+    kmeans.fit(data)
+    
+    #cl.plotKMeans(data, tlabels)
+    
+    return kmeans, cl.randIndex(kmeans.labels_, labels), k
+    
