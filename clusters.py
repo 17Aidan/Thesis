@@ -14,7 +14,9 @@ from collections import defaultdict
 # Create function that runs kmeans with a range of clusters with the data, test the accuracy (inertia) of different cluster numbers representing the raw data using the elbow method, return the optimal number of clusters
 
 def K(data, max_k = 11, plot = False):
-
+    """
+    input data. function approximates optimal number of clusters using elbow method and returns this value
+    """
     inertias = []
     for i in range(1,max_k):
         kmeans = KMeans(n_clusters=i)
@@ -36,7 +38,7 @@ def normalize(data) :
 def plotKMeans(data, labels1, labels2 = None): 
     """"
     input data,
-    returns plot of data color-coded by labels1; If labels2 is specified, we use 'x' to indicate a difference between label values (e.g., incorrect classification)
+    returns plot of data color-coded by labels1; If labels2 is specified, we use 'x' to indicate a difference between label    values (e.g., incorrect classification)
     
     """
 
@@ -156,3 +158,11 @@ def importData(data, labels):
     darr = np.array(dlist)
     
     return darr, labels
+
+def plotSoms(somWinners, kmeansLabels, trueLabels):
+    """
+    input som winnners, kmeansLabels, and true labels. The plot soms function will then return a plot using the plotKmeans 
+    function. if the kmeans labels and the true labels dont match, the function will retune and x on that coordinate
+    """
+    plotKMeans(somWinners, kmeansLabels, trueLabels)
+    plotKMeans(somWinners, trueLabels, kmeansLabels)
