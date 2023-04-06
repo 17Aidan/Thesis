@@ -118,17 +118,11 @@ def randIndex(klabels, labels):
     """"
     input: klabels, labels
     
-    uses assign clusters and true cluster labels to measure accuracy of kmeans on data. rand index takes compares 
-    how well the predicted clusters and the true clusters line up. getClusters is used to find cluster names and 
-    predicted number of clusters (k) in final tuple
+    uses true cluster labels to measure accuracy of kmeans on data. rand index takes compares 
+    how well the predicted clusters and the true clusters line up. 
     
     return rand index
     """
-    listl = assignClusters(klabels, labels)
-    print(labels)
-    print(listl)
-    print(klabels)
-    
     score = sklearn.metrics.rand_score(klabels, labels)
     
     return score 
