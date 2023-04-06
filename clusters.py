@@ -165,4 +165,3 @@ def plotSoms(somWinners, kmeansLabels, trueLabels):
     function. if the kmeans labels and the true labels dont match, the function will retune and x on that coordinate
     """
     plotKMeans(somWinners, kmeansLabels, trueLabels)
-    plotKMeans(somWinners, trueLabels, kmeansLabels)
