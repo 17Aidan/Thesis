@@ -9,6 +9,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 import pandas as pd
 import matplotlib.pyplot as plt
 from collections import defaultdict
+from matplotlib.colors import ListedColormap
 
 
 # Create function that runs kmeans with a range of clusters with the data, test the accuracy (inertia) of different cluster numbers representing the raw data using the elbow method, return the optimal number of clusters
@@ -159,9 +160,30 @@ def importData(data, labels):
     
     return darr, labels
 
-def plotSoms(somWinners, kmeansLabels, trueLabels):
+def mapSoms(som, labels, data, n_neurons, m_neurons):
     """
-    input som winnners, kmeansLabels, and true labels. The plot soms function will then return a plot using the plotKmeans 
-    function. if the kmeans labels and the true labels dont match, the function will retune and x on that coordinate
+    This function takes as an input: the som object, the labels, date, nueron number height, nueron number length.
+    The function returns a distance map where each block is a nueron and each unique colored symbol represent a BMU
     """
-    plotKMeans(somWinners, kmeansLabels, trueLabels)
+    label_set = set(labels)
+    label_dict = dict(zip(label_set, range(len(label_set))))
+    target = np.array([label_dict[label] for label in labels])
+    
+    # Define the colormap with as many colors as there are unique labels
+    colors = ['C{}'.format(i) for i in range(len(np.unique(labels)))]
+    cmap = ListedColormap(colors)
+
+    # Create the plot
+    plt.figure(figsize=(n_neurons, m_neurons))
+    plt.pcolor(som.distance_map().T, cmap='bone_r')  # plotting the distance map as background
+    plt.colorbar()
+
+    # Plotting the response for each pattern in the dataset
+    markers = ['o', 's', 'D', '^', 'v', '<', '>', 'p', '*', 'h', 'H', 'd']
+    for cnt, xx in enumerate(data):
+        w = som.winner(xx)
+        # place a marker on the winning position for the sample xx
+        plt.plot(w[0]+.5, w[1]+.5, markers[target[cnt] % len(markers)], markerfacecolor='None',
+             markeredgecolor=colors[target[cnt]], markersize=12, markeredgewidth=2)
+
+    plt.show()
