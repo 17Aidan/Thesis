@@ -36,7 +36,7 @@ def normalize(data) :
 	return (data - np.mean(data, axis=0)) / np.std(data, axis=0)
 
 # Create function that plots kmeans data based on the data and elbow method
-def plotKMeans(data, labels1, labels2 = None): 
+def plotKMeans(data, labels1a, labels2 = None): 
     """"
     input data,
     returns plot of data color-coded by labels1; If labels2 is specified, we use 'x' to indicate a difference between label    values (e.g., incorrect classification)
@@ -45,11 +45,14 @@ def plotKMeans(data, labels1, labels2 = None):
 
     date = np.array(data)
     x, y = date.T
+    
+    labels1b = pd.factorize(labels1a)
+    labels1 = labels1b[0]
 
     if np.any(labels2 == None):
        plt.scatter(x,y,c = labels1)
        return None
-
+    
     assignedDict = labelClusters(labels1, labels2)
     assigned = [assignedDict[l] for l in labels1]
     correct = np.array(assigned) == np.array(labels2)
@@ -130,35 +133,67 @@ def randIndex(klabels, labels):
     
     return score 
 
-def use_kmeans(data, labels):
+def use_kmeans(data, labels, k = 0):
     """
-    enter data and labels as np arrays. this function preforms kmeans on the data and then compares the arbitrary 
+    enter data and labels as np arrays. You can also specify a the number of clusters but otherwise this will be computed with the elbow method. This function preforms kmeans on the data and then compares the arbitrary
     cluster labels to the true labels, giving the rand index. This function returns the kmeans object, the rand index 
     and the number of clusters as a tuple in that order.
     """
-    k = K(data)
+    
+    if k==0:
+        k = K(data)
+     
     kmeans = KMeans(n_clusters=k)
     kmeans.fit(data)
     
-    return kmeans, randIndex(kmeans.labels_, labels), k
+    return kmeans, randIndex(kmeans.labels_, labels)
 
-def importData(data, labels):
     """
+def importData(data, labels):
+    ""
     enter name of data file in csv format, enter name of labels file in csv format. Make sure both files are local so they 
     can be directly called. This function spits out a tuple with a 2D numpy array of the data first and a 1D array of the 
     labels second.
-    """
-    data = pd.read_csv('iris_features.csv', 
+    ""
+    data = pd.read_csv(data, 
                     header=0, sep='\t+', engine='python')
-    labelz = pd.read_csv('iris_labels.csv', header = 0)
+    labelz = pd.read_csv(labels, header = 0)
     labels = np.array(labelz.iloc[:, 0])
 
     dlist = []
     for x in range(len(data)):
         dlist.append(list(data.loc[x]))
     darr = np.array(dlist)
+    """
     
-    return darr, labels
+def import_data(data_file, labels_file, label_column='tumor'):
+    """
+    Enter name of data file and labels file in TSV format. 
+    Make sure both files are in the same local directory so they can be directly called. 
+    This function returns a tuple with a 2D numpy array of the data first and a 1D array of the labels second.
+
+    Parameters:
+    data_file (str): Name of the data TSV file
+    labels_file (str): Name of the labels TSV file
+    label_column (str): Name of the column to use as labels
+
+    Returns:
+    tuple: A tuple containing a 2D numpy array of the data and a 1D array of the labels
+    """
+    try:
+        data = pd.read_csv(data_file, header=0, sep='\t', index_col=0, engine='python')
+        data = data.transpose() # transpose the data so that each sample is a row, not a column
+        labels_df = pd.read_csv(labels_file, header=0, sep='\t', index_col=0, engine='python')
+        labels = labels_df[label_column].values
+        return data.values, labels
+    except FileNotFoundError:
+        print("File not found. Please check the file name and directory.")
+        return None
+    except Exception as e:
+        print("Error reading file: ", e)
+        return None
+    
+    return data, labels
 
 def mapSoms(som, labels, data, n_neurons, m_neurons):
     """
